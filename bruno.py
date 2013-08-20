@@ -52,16 +52,17 @@ class BrunoParser(object):
 		# TODO run the parser exe
 		
 		#os.chdir( 'c:\\documents and settings\\flow_model' )
-		print os.path.abspath("./bruno/")
 							
-		print call([os.path.abspath('' + self.binaryPath), os.path.abspath(replayPath)], cwd=os.path.abspath("./bruno/"))
+		print call([os.path.abspath('' + self.binaryPath), 
+				os.path.abspath(replayPath)], 
+				cwd=os.path.abspath("bruno/"))
 		self.replay = os.path.splitext(os.path.basename(replayPath))[0]
 		
 		return self.isJsonDirPopulated(self.replay)
 	
 	def getJsonForFile(self, filename):
 		print '' + self.getReplayJsonPath() + filename + ".json"
-		f = open('' + self.getReplayJsonPath() + filename + ".json", 'r')
+		f = open(os.path.abspath('' + self.getReplayJsonPath() + filename + ".json"), 'r')
 		ret = json.load(f)
 		f.close()
 		return ret

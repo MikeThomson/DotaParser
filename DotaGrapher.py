@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import bruno
 import pprint
 
+
+
+
 if __name__ == '__main__':
 	
 	parser = bruno.BrunoParser('./bruno/')
@@ -20,9 +23,15 @@ if __name__ == '__main__':
 	for player in players :
 		heroes.append(player["hero"])
 	
-	fig, ax = plt.subplots()
-	ax.set_title('Click on legend line to toggle line on/off')
+	#fig, (ax) = plt.subplots()
+	#fig2 = plt.figure()
+	fig = plt.figure()
+	ax = plt.axes()
 	
+	ax2 = plt.axes((1,1,1,1))
+	print ax is ax2
+	ax.set_title('Click on legend line to toggle line on/off')
+	#ax2.set_title('Boogy')
 	#leg.get_frame().set_alpha(0.4)
 	
 	lines = []
@@ -60,17 +69,17 @@ if __name__ == '__main__':
 		else:
 			legline.set_alpha(0.2)
 		fig.canvas.draw()
+		
+	def onKey(event):
+		print event.key
+		#ax.frameon = False
+		#ax.draw()
+		#fig.canvas.draw()
+		#fig2.canvas.draw()
+		
 	
 	fig.canvas.mpl_connect('pick_event', onpick)
+	fig.canvas.mpl_connect('key_press_event', onKey)
 
 	plt.show()
-	#plot(*argList)
-	#plot(data["npc_dota_hero_invoker"]["time"], data["npc_dota_hero_invoker"]["gold"], '-', data["npc_dota_hero_jakiro"]["time"], data["npc_dota_hero_jakiro"]["gold"])
-	'''
-	pylab.xlabel('time (s)')
-	pylab.ylabel('voltage (mV)')
-	pylab.title('About as simple as it gets, folks')
-	pylab.grid(True)
-	pylab.savefig("test.png")
-	pylab.show()
-	'''
+	
