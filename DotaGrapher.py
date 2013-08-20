@@ -5,17 +5,23 @@ Created on Aug 13, 2013
 '''
 import pylab
 import matplotlib.pyplot as plt
+import sys
 import bruno
 import pprint
-
+from time import sleep
 
 
 
 if __name__ == '__main__':
 	
+	if(len(sys.argv) > 1) :
+		replay = sys.argv[1]
+	else :
+		exit(1);
+	
 	parser = bruno.BrunoParser('./bruno/')
-	parser.setJsonRootDir('./bruno/json/')
-	parser.parse("bruno/278085711.dem")
+	#parser.setJsonRootDir('./bruno/json/')
+	parser.parse(replay)
 	#parser.setReplayId('265874806')
 	
 	players = parser.getPlayers()

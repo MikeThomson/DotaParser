@@ -8,6 +8,20 @@ import os
 import csv
 from subprocess import call
 from operator import itemgetter
+from time import sleep
+import sys
+import jpath
+import imp
+
+def main_is_frozen():
+	return (hasattr(sys, "frozen") or # new py2exe
+		hasattr(sys, "importers") # old py2exe
+		or imp.is_frozen("__main__")) # tools/freeze
+
+def get_main_dir():
+	if main_is_frozen():
+		return os.path.dirname(sys.executable)
+	return os.path.dirname(sys.argv[0])
 
 class BrunoParser(object):
 	'''
@@ -19,8 +33,15 @@ class BrunoParser(object):
 		'''
 		Constructor
 		'''
-		self.jsonRootDir = "./json/"
-		self.binaryPath = "bruno/DotaParser.exe"
+		'''
+		if hasattr(sys,"frozen") and sys.frozen in ("windows_exe", "console_exe"):
+			self.p=jpath.path(os.path.abspath(sys.executable)).dirname()
+		else :
+			self.p = os.path.abspath(os.path.realpath(__file__))
+		'''
+		self.p = get_main_dir()
+		self.jsonRootDir = self.p + "/bruno/json/"
+		self.binaryPath = self.p + "/bruno/DotaParser.exe"
 		self.replay = None
 		self.nameDict = None
 		
@@ -52,16 +73,14 @@ class BrunoParser(object):
 		# TODO run the parser exe
 		
 		#os.chdir( 'c:\\documents and settings\\flow_model' )
-							
 		print call([os.path.abspath('' + self.binaryPath), 
 				os.path.abspath(replayPath)], 
-				cwd=os.path.abspath("bruno/"))
+				cwd=os.path.abspath(self.p + "/bruno/"))
 		self.replay = os.path.splitext(os.path.basename(replayPath))[0]
 		
 		return self.isJsonDirPopulated(self.replay)
 	
 	def getJsonForFile(self, filename):
-		print '' + self.getReplayJsonPath() + filename + ".json"
 		f = open(os.path.abspath('' + self.getReplayJsonPath() + filename + ".json"), 'r')
 		ret = json.load(f)
 		f.close()
@@ -98,7 +117,7 @@ class BrunoParser(object):
 	
 	def buildNameDict(self):
 		self.nameDict = {}
-		with open("./bruno/dictionary.txt", 'rb') as csvfile:
+		with open(os.path.abspath(self.p + "./bruno/dictionary.txt"), 'rb') as csvfile:
 			reader = csv.reader(csvfile)
 			for row in reader :
 				self.nameDict[row[0]] = row[1]
