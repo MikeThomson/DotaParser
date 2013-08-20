@@ -10,9 +10,10 @@ import pprint
 
 if __name__ == '__main__':
 	
-	parser = bruno.BrunoParser('nn')
-	parser.setJsonRootDir('./jsonTest/')
-	parser.setReplayId('265874806')
+	parser = bruno.BrunoParser('./bruno/')
+	parser.setJsonRootDir('./bruno/json/')
+	parser.parse("bruno/278085711.dem")
+	#parser.setReplayId('265874806')
 	
 	players = parser.getPlayers()
 	heroes = []
@@ -34,7 +35,7 @@ if __name__ == '__main__':
 		for i in xrange(len(data[hero]["time"])) :
 			data[hero]["time"][i] = parser.ticksToMinutes(data[hero]["time"][i])
 			
-		line, = ax.plot(data[hero]["time"], data[hero]["gold"], label=hero)
+		line, = ax.plot(data[hero]["time"], data[hero]["gold"], label=parser.getPrettyName(hero))
 		lines.append(line)
 
 	leg = ax.legend(loc='upper left', fancybox=True, shadow=True)

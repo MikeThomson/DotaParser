@@ -4,6 +4,9 @@ Created on Aug 14, 2013
 @author: Mike
 '''
 import json
+import os
+import csv
+from subprocess import call
 from operator import itemgetter
 
 class BrunoParser(object):
@@ -17,8 +20,9 @@ class BrunoParser(object):
 		Constructor
 		'''
 		self.jsonRootDir = "./json/"
-		self.binaryPath = "./parser.exe"
+		self.binaryPath = "bruno/DotaParser.exe"
 		self.replay = None
+		self.nameDict = None
 		
 	def setJsonRootDir(self, jsonRootDir):
 		self.jsonRootDir = jsonRootDir
@@ -39,15 +43,24 @@ class BrunoParser(object):
 	def getPopulatedReplayList(self):
 		pass
 	
-	def parse(self): 
-		if (self.isBinaryPathValid() is not True 
-			or self.isJsonRootDirValid() is not True 
-			or self.replay is None):
-			return False
+	def parse(self, replayPath): 
+		#if (self.isBinaryPathValid() is not True 
+		#	or self.isJsonRootDirValid() is not True 
+		#	):
+		
+		#return False
 		# TODO run the parser exe
+		
+		#os.chdir( 'c:\\documents and settings\\flow_model' )
+		print os.path.abspath("./bruno/")
+							
+		print call([os.path.abspath('' + self.binaryPath), os.path.abspath(replayPath)], cwd=os.path.abspath("./bruno/"))
+		self.replay = os.path.splitext(os.path.basename(replayPath))[0]
+		
 		return self.isJsonDirPopulated(self.replay)
 	
 	def getJsonForFile(self, filename):
+		print '' + self.getReplayJsonPath() + filename + ".json"
 		f = open('' + self.getReplayJsonPath() + filename + ".json", 'r')
 		ret = json.load(f)
 		f.close()
@@ -73,6 +86,22 @@ class BrunoParser(object):
 	
 	def ticksToMinutes(self, ticks):
 		return ticks / 30.0 / 60.0
+	
+	def getPrettyName(self, code):
+		if self.nameDict == None :
+			self.buildNameDict()
+		if code in self.nameDict :
+			return self.nameDict[code]
+		else :
+			return code
+	
+	def buildNameDict(self):
+		self.nameDict = {}
+		with open("./bruno/dictionary.txt", 'rb') as csvfile:
+			reader = csv.reader(csvfile)
+			for row in reader :
+				self.nameDict[row[0]] = row[1]
+		
 	
 	'''
 	These are the methods used to actually get data from the json files
