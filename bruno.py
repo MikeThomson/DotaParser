@@ -10,7 +10,6 @@ from subprocess import call
 from operator import itemgetter
 from time import sleep
 import sys
-import jpath
 import imp
 
 def main_is_frozen():
@@ -104,6 +103,18 @@ class BrunoParser(object):
 				
 		return {"time" : times, "gold" : totalGolds}
 	
+	def totalCsOverTime(self, inputData, hero):
+		total = 0
+		times = []
+		totalCs = []
+		for ele in inputData :
+			if(ele["hero"] == hero ) :
+				times.append(int(ele["time"]))
+				total += 1
+				totalCs.append(total)
+				
+		return {"time" : times, "cs" : totalCs}
+	
 	def ticksToMinutes(self, ticks):
 		return ticks / 30.0 / 60.0
 	
@@ -121,6 +132,13 @@ class BrunoParser(object):
 			reader = csv.reader(csvfile)
 			for row in reader :
 				self.nameDict[row[0]] = row[1]
+				
+	def filterForHero(self, info, hero):
+		retInfo = []
+		for ele in info :
+			if(ele["hero"] == hero) :
+				retInfo.append(ele)
+		return retInfo
 		
 	
 	'''
@@ -143,6 +161,8 @@ class BrunoParser(object):
 		pass
 	
 	def getCs(self):
+		csDicts = (self.getJsonForFile('cs'))["cs"]
+		return sorted(csDicts, key=itemgetter('replaytime'))
 		pass
 	
 	def getDenies(self):
@@ -161,8 +181,15 @@ class BrunoParser(object):
 	def getItemTimes(self):
 		pass
 	
-	def getLevelups(self):
+	def getLevelups(self, asNumber = False):
 		levelDicts = (self.getJsonForFile('levelups'))["leveluptimes"]
+		ret = []
+		if asNumber :
+			for ele in levelDicts :
+				ele["level"] = int(ele["level"])
+				ele["time"] = int(ele["time"])
+				ret.append(ele)
+			levelDicts = ret
 		return sorted(levelDicts, key=itemgetter('replaytime'))
 	
 	def getPauses(self):
