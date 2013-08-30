@@ -10,8 +10,6 @@ import bruno
 import pprint
 from time import sleep
 
-
-
 if __name__ == '__main__':
 	
 	pp = pprint.PrettyPrinter(indent=4)
@@ -114,15 +112,13 @@ if __name__ == '__main__':
 		
 	def onKey(event):
 		print event.key
-		#ax.frameon = False
-		#ax.draw()
-		#fig.canvas.draw()
-		#fig2.canvas.draw()
-		
+		if event.key == 'alt+q' :
+			plt.close('all')
 	
 	fig.canvas.mpl_connect('pick_event', onpick)
 	fig2.canvas.mpl_connect('pick_event', onpickCs)
 	fig.canvas.mpl_connect('key_press_event', onKey)
+	fig2.canvas.mpl_connect('key_press_event', onKey)
 
 	plt.show()
 	
