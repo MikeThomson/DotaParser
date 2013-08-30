@@ -39,7 +39,7 @@ if __name__ == '__main__':
 	#leg.get_frame().set_alpha(0.4)
 	
 	lines = []
-	levelLines = []
+	csLines = []
 	
 	data = {}
 	levelData = {}
@@ -59,16 +59,20 @@ if __name__ == '__main__':
 		line, = ax.plot(data[hero]["time"], data[hero]["gold"], label=parser.getPrettyName(hero))
 		line2, = ax2.plot(csData[hero]["time"], csData[hero]["cs"], label=parser.getPrettyName(hero))
 		lines.append(line)
+		csLines.append(line2)
 
 	leg = ax.legend(loc='upper left', fancybox=True, shadow=True)
+	csLegend = ax2.legend(loc='upper left', fancybox=True, shadow=True)
 
 	lined = dict()
 	for legline, origline in zip(leg.get_lines(), lines):
 		legline.set_picker(5)  # 5 pts tolerance
 		lined[legline] = origline
 
-		
-		
+	csLined = dict()
+	for legline, origline in zip(csLegend.get_lines(), csLines):
+		legline.set_picker(5)  # 5 pts tolerance
+		csLined[legline] = origline
 	
 	def onpick(event):
 		# on the pick event, find the orig line corresponding to the
@@ -85,6 +89,21 @@ if __name__ == '__main__':
 			legline.set_alpha(0.2)
 		fig.canvas.draw()
 		
+	def onpickCs(event):
+		# on the pick event, find the orig line corresponding to the
+		# legend proxy line, and toggle the visibility
+		legline = event.artist
+		origline = csLined[legline]
+		vis = not origline.get_visible()
+		origline.set_visible(vis)
+		# Change the alpha on the line in the legend so we can see what lines
+		# have been toggled
+		if vis:
+			legline.set_alpha(1.0)
+		else:
+			legline.set_alpha(0.2)
+		fig2.canvas.draw()
+		
 	def onKey(event):
 		print event.key
 		#ax.frameon = False
@@ -94,6 +113,7 @@ if __name__ == '__main__':
 		
 	
 	fig.canvas.mpl_connect('pick_event', onpick)
+	fig2.canvas.mpl_connect('pick_event', onpickCs)
 	fig.canvas.mpl_connect('key_press_event', onKey)
 
 	plt.show()
