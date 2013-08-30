@@ -60,7 +60,15 @@ if __name__ == '__main__':
 		line2, = ax2.plot(csData[hero]["time"], csData[hero]["cs"], label=parser.getPrettyName(hero))
 		lines.append(line)
 		csLines.append(line2)
-
+		
+	#towers
+	''' 
+	# Commented out right now because the parser doesn't awlays see towers right
+	# but it does kinda work
+	towerData = parser.getBuildings()
+	for i in xrange(len(towerData)) :
+		ax.axvline(x=parser.ticksToMinutes(towerData[i]["time"]), label=towerData[i]["building"])
+	'''
 	leg = ax.legend(loc='upper left', fancybox=True, shadow=True)
 	csLegend = ax2.legend(loc='upper left', fancybox=True, shadow=True)
 

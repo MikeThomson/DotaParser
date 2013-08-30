@@ -140,7 +140,8 @@ class BrunoParser(object):
 				retInfo.append(ele)
 		return retInfo
 		
-	
+	def cloneKeyOnFinalTime(self, keyToClone):
+		pass
 	'''
 	These are the methods used to actually get data from the json files
 	'''
@@ -149,6 +150,8 @@ class BrunoParser(object):
 		pass
 	
 	def getBuildings(self):
+		dicts = (self.getJsonForFile('buildings'))["buildingtimers"]
+		return sorted(dicts, key=itemgetter('replaytime'))
 		pass
 	
 	def getBuybacks(self):
@@ -163,7 +166,6 @@ class BrunoParser(object):
 	def getCs(self):
 		csDicts = (self.getJsonForFile('cs'))["cs"]
 		return sorted(csDicts, key=itemgetter('replaytime'))
-		pass
 	
 	def getDenies(self):
 		pass
